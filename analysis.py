@@ -9,6 +9,7 @@ def categories(
     answers: Series,
     synonyms: dict[str, list[str]] = {},
     drop_words: list[str] = [],
+    keep_words: list[str] = [],
     drop_rows: list[int] = []
 ) -> Counter[str, int]:
 
@@ -31,7 +32,7 @@ def categories(
 
     counter = Counter(words)
 
-    # drop words
+    # Drop words
     for word in drop_words:
         del counter[word]
 
@@ -41,5 +42,10 @@ def categories(
             if word in synonyms_:
                 counter[preferred] += counter[word]
                 del counter[word]
+
+    # Keep only specified words
+    for word in list(counter.keys()):
+        if word not in keep_words:
+            del counter[word]
 
     return counter
