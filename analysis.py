@@ -14,6 +14,8 @@ def categories(
     # Split responses into a flat list of words
     words = chain.from_iterable(split(',|/| ', item) for item in answers)
 
+    # Strip leading and trailing characters from words
+    words = [item.strip('.,!“”\'()') for item in words]
     # Drop empty characters
     words = list(filter(lambda x: x != '', words))
     # convert to lower case
