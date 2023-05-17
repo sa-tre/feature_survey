@@ -11,3 +11,4 @@ dependencies:
   - pandas=1.5.2
   - python=3.10.8
   - wordcloud=1.9.1.1
+  - pre-commit=3.3.1
