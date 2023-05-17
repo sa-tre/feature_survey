@@ -2,13 +2,21 @@ from collections import Counter
 from itertools import chain
 from re import split
 
+from pandas import Series
+
 
 def categories(
-    answers: list[str],
+    answers: Series,
     synonms: dict[str, str] = {},
     drop_words: list[str] = [],
     drop_rows: list[int] = []
 ) -> Counter[str, int]:
+
+    # Drop empty entries
+    answers = answers.dropna()
+
+    # drop specified rows
+    answers = answers.drop(drop_rows)
 
     # Split responses into a flat list of words
     words: list[str]
