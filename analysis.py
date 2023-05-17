@@ -12,7 +12,7 @@ def categories(
 ) -> Counter[str, int]:
 
     # Split responses into a flat list of words
-    words = chain.from_iterable(split(',| ', item) for item in answers)
+    words = chain.from_iterable(split(',|/| ', item) for item in answers)
 
     # Drop empty characters
     words = list(filter(lambda x: x != '', words))
