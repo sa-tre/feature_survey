@@ -7,7 +7,7 @@ from pandas import Series
 
 def categories(
     answers: Series,
-    synonms: dict[str, str] = {},
+    synonyms: dict[str, list[str]] = {},
     drop_words: list[str] = [],
     drop_rows: list[int] = []
 ) -> Counter[str, int]:
@@ -34,5 +34,12 @@ def categories(
     # drop words
     for word in drop_words:
         del counter[word]
+
+    # Consolidate synonyms
+    for word in list(counter.keys()):
+        for preferred, synonyms_ in synonyms.items():
+            if word in synonyms_:
+                counter[preferred] += counter[word]
+                del counter[word]
 
     return counter
