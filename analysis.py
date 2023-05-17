@@ -1,18 +1,18 @@
 from collections import Counter
 from itertools import chain
 from re import split
-from typing import Optional
 
 
 def categories(
     answers: list[str],
-    synonms: Optional[dict[str, str]] = None,
-    drop_words: Optional[list[str]] = None,
-    drop_rows: Optional[list[int]] = None
+    synonms: dict[str, str] = {},
+    drop_words: list[str] = [],
+    drop_rows: list[int] = []
 ) -> Counter[str, int]:
 
     # Split responses into a flat list of words
-    words = chain.from_iterable(split(',|/| ', item) for item in answers)
+    words: list[str]
+    words = list(chain.from_iterable(split(',|/| ', item) for item in answers))
 
     # Strip leading and trailing characters from words
     words = [item.strip('.,!“”\'()') for item in words]
@@ -21,4 +21,10 @@ def categories(
     # convert to lower case
     words = [item.lower() for item in list(words)]
 
-    return Counter(words)
+    counter = Counter(words)
+
+    # drop words
+    for word in drop_words:
+        del counter[word]
+
+    return counter
