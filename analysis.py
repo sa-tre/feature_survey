@@ -49,4 +49,14 @@ def categories(
         if word not in keep_words:
             del counter[word]
 
-    return pd.DataFrame(counter.values(), index=counter.keys())
+    df = pd.DataFrame(
+        counter.values(),
+        index=counter.keys(),
+        columns=['count']
+    ).sort_values(by='count', ascending=False)
+
+    total_responses = answers.shape[0]
+
+    df = df.assign(percent=df.apply(lambda x: x/total_responses*100))
+
+    return df
