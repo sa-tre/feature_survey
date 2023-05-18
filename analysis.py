@@ -1,6 +1,6 @@
 from collections import Counter
 from itertools import chain
-from re import split
+from re import split, sub
 
 from pandas import Series
 import pandas as pd
@@ -17,32 +17,39 @@ def categories(
     # Drop empty entries
     answers = answers.dropna()
 
-    # drop specified rows
+    # Drop specified rows
     answers = answers.drop(drop_rows)
 
-    # Split responses into a flat list of words
-    words: list[str]
-    words = list(chain.from_iterable(split(',|/| ', item) for item in answers))
+    # Lower case
+    answers = answers.apply(lambda x: x.lower())
+
+    # Consolidate synonyms per answer
+    for preferred, synonyms_ in synonyms.items():
+        for item in synonyms_:
+            answers = answers.apply(lambda x: sub(item, preferred, x, count=0))
+
+    # Split words around ',', '/', and ' '
+    answers = answers.apply(lambda x: split(',|/| ', x))
 
     # Strip leading and trailing characters from words
-    words = [item.strip('.,!“”\'()') for item in words]
-    # Drop empty characters
-    words = list(filter(lambda x: x != '', words))
-    # convert to lower case
-    words = [item.lower() for item in list(words)]
+    answers = answers.apply(lambda x: [item.strip('.,!“”\'() ') for item in x])
 
+    # Drop empty characters
+    answers = answers.apply(lambda x: filter(lambda y: y != '', x))
+
+    # Keep only unique words per answer (to avoid counting a word multiple
+    # times from a single answer)
+    answers = answers.apply(lambda x: set(x))
+
+    # Flatten
+    words = chain.from_iterable(answers)
+
+    # Count
     counter = Counter(words)
 
     # Drop words
     for word in drop_words:
         del counter[word]
-
-    # Consolidate synonyms
-    for word in list(counter.keys()):
-        for preferred, synonyms_ in synonyms.items():
-            if word in synonyms_:
-                counter[preferred] += counter[word]
-                del counter[word]
 
     # Keep only specified words
     for word in list(counter.keys()):
