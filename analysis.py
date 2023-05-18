@@ -3,6 +3,7 @@ from itertools import chain
 from re import split
 
 from pandas import Series
+import pandas as pd
 
 
 def categories(
@@ -48,4 +49,4 @@ def categories(
         if word not in keep_words:
             del counter[word]
 
-    return counter
+    return pd.DataFrame(counter.values(), index=counter.keys())
