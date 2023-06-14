@@ -111,6 +111,6 @@ def categories_per_answer(
     if keep_words:
         answers = answers.apply(lambda x: x & set(keep_words))
 
-    answers = answers.apply(lambda x: ';'.join(x))
+    answers = answers.apply(lambda x: ';'.join(sorted(x)))
 
     return pd.DataFrame(answers)
