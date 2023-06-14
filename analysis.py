@@ -1,6 +1,7 @@
 from collections import Counter
 from itertools import chain
 from re import split, sub
+from typing import Optional
 
 from pandas import Series
 import pandas as pd
@@ -10,7 +11,7 @@ def categories(
     answers: Series,
     synonyms: dict[str, list[str]] = {},
     drop_words: list[str] = [],
-    keep_words: list[str] = [],
+    keep_words: Optional[list[str]] = None,
     drop_rows: list[int] = []
 ) -> Counter[str, int]:
     # Drop empty entries
@@ -51,9 +52,10 @@ def categories(
         del counter[word]
 
     # Keep only specified words
-    for word in list(counter.keys()):
-        if word not in keep_words:
-            del counter[word]
+    if keep_words:
+        for word in list(counter.keys()):
+            if word not in keep_words:
+                del counter[word]
 
     df = pd.DataFrame(
         counter.values(),
@@ -72,7 +74,7 @@ def categories_per_answer(
     answers: Series,
     synonyms: dict[str, list[str]] = {},
     drop_words: list[str] = [],
-    keep_words: list[str] = [],
+    keep_words: Optional[list[str]] = None,
     drop_rows: list[int] = []
 ) -> Series:
     # Fill empty entries
@@ -106,7 +108,8 @@ def categories_per_answer(
     answers = answers.apply(lambda x: x - set(drop_words))
 
     # Keep only specified words
-    answers = answers.apply(lambda x: x & set(keep_words))
+    if keep_words:
+        answers = answers.apply(lambda x: x & set(keep_words))
 
     answers = answers.apply(lambda x: ';'.join(x))
 
