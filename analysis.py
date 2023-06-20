@@ -73,8 +73,12 @@ def categories(
     ).sort_values(by='count', ascending=False)
 
     total_responses = answers.shape[0]
+    total_nonempty = sum(answers_multi_categories.astype(bool))
 
-    df = df.assign(percent=df.apply(lambda x: x/total_responses*100))
+    df = df.assign(
+        percent_total=df.apply(lambda x: x/total_responses*100),
+        percent_nonempty=df.apply(lambda x: x/total_nonempty*100),
+    )
 
     return df
 
