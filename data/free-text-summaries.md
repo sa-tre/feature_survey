@@ -49,6 +49,7 @@ Some TRE systems follow a "remote-jobs" model, in which researchers supply code 
 # 23.a. Are there sensitivity systems that you think are important or use?
 
 The responses to this question can be broadly summarised as falling into two camps:
+
 - All data should be treated as at the highest level of sensitivity
 - The security level of a TRE should be configurable
 
